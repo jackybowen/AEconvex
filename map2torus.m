@@ -1,4 +1,4 @@
-function map2torus( xy )
+function map2torus( xy, R,r)
 % map2TORUS
 %   draw 3d plot of f(x,y) on 2-torus
 %       Input: fxy -------- function handle
@@ -7,7 +7,6 @@ delta = pi/10;
 theta = -pi : delta : pi;
 phi   = -pi : delta : pi;       
 [phi,theta] = meshgrid(phi,theta);
-R = 4; r = 1;
 
 x = (R+r.*cos(theta)).*cos(phi);
 y = (R+r.*cos(theta)).*sin(phi);

@@ -2,7 +2,7 @@
 close all; clear all; clc
 %  Direct Method
 % compact space defined as 
-xyspan = [-pi/2,pi/2,-2*pi,2*pi];
+xyspan = [-pi/2,pi/2,-pi,pi];
 % bivariate function fxy
 syms t
 x = sym('x',[2,1]);
