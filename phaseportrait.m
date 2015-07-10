@@ -70,7 +70,7 @@ while 1,
         y2=y1+sin(theta+pi/8)*lengthy/50*flag;
         plot([x0 x1 x2],[y0 y1 y2]);
         
-        pp = [pp; {x}];
+        pp = [pp; {x,[x0,y0;x1,y1;x2,y2]}];
         
 end
 hold off

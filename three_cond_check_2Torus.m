@@ -25,8 +25,10 @@ surf(X1,X2,fval)
 title(['F(x1,x2)=',char(F)])
 grid on
 
-dF = [diff(F,x(1))/r; diff(F,x(2))/(R+r*cos(x(1)))]
-ddF = diff(F,x(1),2)/(r^2*sin(x(1))^2*cos(x(1))^2)+diff(F,x(2),2)/(R+r*cos(x(1)))^2;
+dF = [diff(F,x(1));diff(F,x(2))]
+ddF = laplacian(F)
+% dF = [diff(F,x(1))/r; diff(F,x(2))/(R+r*cos(x(1)))]
+% ddF = diff(F,x(1),2)/(r*sin(x(1))*cos(x(1)))^2+diff(F,x(2),2)/(R+r*cos(x(1)))^2;
 sys = matlabFunction(-dF, 'Vars', {t, x});
 
 figure(2)

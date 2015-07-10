@@ -1,4 +1,4 @@
-function map2torus( xy, R,r)
+function map2torus( xy, R, r )
 % map2TORUS
 %   draw 3d plot of f(x,y) on 2-torus
 %       Input: fxy -------- function handle
