@@ -7,31 +7,53 @@ span = [0,2*pi,0,pi];
 % bivariate function F(x1,x2) <=> F(phi,theta)
 syms t
 x = sym('x',[2,1]);
-ep = 0.01; % \epsilon
-alpha = 1; beta = 1; delta = (ep - pi/4)*2;
+alpha = -1; beta = 2; delta = 1.8; %(ep - pi/4)*2;
 
 %% Choose the F(x1,x2)
 % F = -2*cos(x(1))-cos(x(2))-cos(x(1)+x(2));
-F = -alpha * cos(x(1)) + beta * sin(2*x(2)+delta);
+% F = -alpha * cos(x(1)) + beta * sin(2*x(2)+delta);
+F = alpha*cos(x(1))*sin(x(2)) + beta * sin(2*x(2)+delta);
+
 
 dF = [diff(F,x(1))/sin(x(2));diff(F,x(2))]
-ddF = cot(x(2))*diff(F,x(2)) + diff(F,x(2),2)+diff(F,x(1),2)/sin(x(2))^2
+ddF = cot(x(2))*diff(F,x(2)) +diff (F,x(2),2)+diff(F,x(1),2)/sin(x(2))^2
 sys = matlabFunction(-dF, 'Vars', {t, x});
 
-%3d plot:
+% scalar field on the sphere:
 [X1,X2]=meshgrid(span(1):0.1:span(2),span(3):0.1:span(4));
-fval = eval(subs(F,x,{X1;X2}));
 figure(1)
-surf(X1,X2,fval)
-title(['F(x1,x2)=',char(F)])
+n = 40;
+[x1,y1,z1] = sphere(n);
+theta = acos(z1);
+phi = atan2(y1,x1);
+phi = (phi < 0).* 2*pi + phi;
+
+C = eval(subs(F,x,{phi;theta}));
+h = surf(x1,y1,z1,C); colorbar
+view(-45-180,20)
+axis equal; %shading interp% title(['F(x1,x2)=',char(F)])
 grid on
-%phase portrait
+
+hold on
+e(1,:) = [0,2.7833];
+e(2,:) = [0,1.4791];
+e(3,:) = [pi,0.14421];
+e(4,:) = [pi,2.7833];
+xe = sin(e(:,2)).*cos(e(:,1));
+ye = sin(e(:,2)).*sin(e(:,1));
+ze = cos(e(:,2));
+plot3(xe(2),ye(2),ze(2),'ro')
+% text(xe(2),ye(2),ze(2),'The unique minimum')
+
+% phase portrait
 figure(2)
 pp = phaseportrait(sys,span,10,1);
-%On the sphere
+
+% Gradient Field on the sphere
 figure(3)
 map2sphere(pp(:,1),pp(:,2))
 
+% steographic projection
 figure(4)
 map2plane(pp(:,1),pp(:,2))
 

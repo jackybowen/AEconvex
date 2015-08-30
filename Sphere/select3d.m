@@ -320,6 +320,7 @@ function [pout, vout, viout, facevout, faceiout]  = select3d(obj)
 	  viout = faces(faceiout,min_index);
 	  vout = vert(:,viout);
     end
+end
 
     %--------------------------------------------------------%
 function [p] = local_Data2PixelTransform(ax,vert)
@@ -350,3 +351,4 @@ function [p] = local_Data2PixelTransform(ax,vert)
 
     p(:,1) = xvert(:,1) ./ w;
     p(:,2) = xvert(:,2) ./ w;
+end

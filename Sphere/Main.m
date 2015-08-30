@@ -1,24 +1,68 @@
 clear all; close all; clc
-delta = pi/20;
-phi   = 0 : delta : 2*pi;
-theta = 0 : delta : pi;
-[phi,theta] = meshgrid(phi,theta);
-x0 = 0; y0 = 0; z0 = 0;
-r = 1;
+global h;
+global alpha beta epsl delta;
+%% Formalize the function F(phi,theta) on the sphere
+% compact space defined on a unit sphere
+span = [0,2*pi,0,pi];
+syms t
+x = [sym('phi');sym('theta')];
+epsl = 0.3; % \epsilon
+alpha = 1; beta = 1; delta = (epsl - pi/4)*2;
 
-x = x0 + r.*sin(theta).*cos(phi);
-y = y0 + r.*sin(theta).*sin(phi);
-z = z0 + r.*cos(theta);
-h = surf(x,y,z);
-%zoom(10);
-disp('Click anywhere on the surface, then hit return')
-pause
-[p v vi face facei] = select3d(h);
-marker1 = line('xdata',p(1),'ydata',p(2),'zdata',p(3),'marker','o',...
-            'erasemode','xor','markerfacecolor','k');
-marker2 = line('xdata',v(1),'ydata',v(2),'zdata',v(3),'marker','o',...
-            'erasemode','xor','markerfacecolor','b');
-% marker2 = line('erasemode','xor','xdata',face(1,:),'ydata',face(2,:),...
-%             'zdata',face(3,:),'linewidth',10);
-disp(sprintf('\nYou clicked at\nX: %.2f\nY: %.2f\nZ: %.2f',p(1),p(2),p(3)'))
-disp(sprintf('\nThe nearest vertex is\nX: %.2f\nY: %.2f\nZ: %.2f',v(1),v(2),v(3)'))
+F = -alpha * cos(x(1)) + beta * sin(2*x(2)+delta); % x1---\phi, x2---\theta
+
+% derive the gradient field and the Laplacian
+dF = [diff(F,x(1))/sin(x(2));diff(F,x(2))]
+ddF = cot(x(2))*diff(F,x(2)) + diff(F,x(2),2)+diff(F,x(1),2)/sin(x(2))^2
+sys = matlabFunction(-dF, 'Vars', {t, x});
+
+
+%% Plot the scalar field on a sphere
+n = 30; % define the sphere via n*n grids
+% Phi   = linspace(0,2*pi,n+1);
+% Theta = linspace(0,pi,n+1);
+% [phi,theta] = meshgrid(Phi,Theta);
+% % 3d plot:
+% x1 = sin(theta).*cos(phi);
+% y1 = sin(theta).*sin(phi);
+% z1 = cos(theta);
+[x1,y1,z1] = sphere(n);
+theta = acos(z1);
+phi = atan2(y1,x1);
+phi = (phi < 0).* 2*pi + phi;
+
+C = eval(subs(F,x,{phi;theta}));
+figure(1)
+h = surf(x1,y1,z1,C); colorbar
+view(-45-180,20)
+axis equal; %shading interp
+title(['F(\phi,\theta)=',char(F)])
+                                                                                                                                                                                          
+hold on
+e(1,:) = [0,pi/4-delta/2];
+e(2,:) = [0,3*pi/4-delta/2];
+e(3,:) = [pi,pi/4-delta/2];
+e(4,:) = [pi,3*pi/4-delta/2];
+xe = sin(e(:,2)).*cos(e(:,1));
+ye = sin(e(:,2)).*sin(e(:,1));
+ze = cos(e(:,2));
+plot3(xe(:),ye(:),ze(:),'r*')
+
+% [P, V] = select3d(h)
+%% Plot the phase portrait on the sphere
+figure(2)
+sphere(30)
+% shading flat
+colormap([1,1,1]);
+plot3(xe(:),ye(:),ze(:),'r*')
+hold on
+init = [xe,ye,ze];
+init = [init;0,0,1]
+[t,traj] = phaseportrait3d('examplesystem',init,[-1 1 -1 1 -1 1],10,1);
+% figure(3)
+% plot(t,traj(:,1))
+% hold on
+% plot(t,traj(:,2))
+% hold on
+% plot(t,traj(:,3))
+% legend('x','y','z')
