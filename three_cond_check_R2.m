@@ -14,7 +14,8 @@ delta =1.8
 %% Choose the F(x1,x2)
 % F = -alpha*cos(atan(x(2)/x(1)))+beta*sin(2*acos((-1+x(1)^2+x(2)^2)/(1+x(1)^2+x(2)^2))+delta);
 % F = alpha*(x(1)^2+x(2)^2)+beta/(1+(x(1)-x1).^2+(x(2)-y1).^2);
-F = 2*x(1)/(1+x(1)^2+x(2)^2)-8*cos(delta)/(1+x(1)^2+x(2)^2)*sqrt(x(1)^2+x(2)^2)
+% F = 2*x(1)/(1+x(1)^2+x(2)^2)-8*cos(delta)/(1+x(1)^2+x(2)^2)*sqrt(x(1)^2+x(2)^2)
+F = x(1)^2+x(2)^2 + 30 * exp(-(x(1)^2+x(2)^2))
 
 dF = [diff(F,x(1));diff(F,x(2))]
 

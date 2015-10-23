@@ -4,6 +4,7 @@ span = [-3 3 -3 3];
 % Hamiltonian system for x in R
 syms t;
 x = sym('x',[2,1]);l = sym('lamda',[2,1]);
+alpha = 10;
 
 L = [-1 1;1 -1];
 % f = (x(1) - 2).^2.*(x(1) + 2).^2;
@@ -18,11 +19,11 @@ f = f + x(2).*(x(2)+1.5).*(x(2)-1.5).*(x(2)-2)
 
 
 z_dot = sym('z_dot',[4,1]); z = [x;l];
-z_dot(1:2) = -[diff(f,z(1));diff(f,z(2))] - L'*L*[z(3);z(4)];
-z_dot(3:4) = L'*L* z(1:2);
+z_dot(1:2) = -alpha*([diff(f,z(1));diff(f,z(2))] + L'*[z(3);z(4)] + alpha^(-1/2)* L'*L*[z(3);z(4)]);
+z_dot(3:4) = alpha^(-1/2)*L* z(1:2);
 
 % subplot(2,1,2)
-m1 = [1.7768 1.7768];
+m1 = [0.6693 0.6693];
 m2 = [0.6693 0.6693];
 hold on
 line([m1(1) span(2)],[m1(2) m1(2)],'Color','r');line([m1(1) m1(1)],[m1(2) span(4)],'Color','r');

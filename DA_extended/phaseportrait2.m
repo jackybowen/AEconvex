@@ -1,4 +1,4 @@
-function pp = phaseportrait(fname,limits,tf,flag)
+function phaseportrait2(fname,limits,tf,flag)
 % PHASEportrait: interactively construct phase portrait for xdot=f(x)
 %
 %   Synopsis: phaseportrait(fname,limits,tf,flag)
@@ -41,16 +41,15 @@ lengthx=limits(2)-limits(1);
 lengthy=limits(4)-limits(3);
 % clf
 axis(limits);
-hold;   
-grid;
+grid on;
 
 'Left click to draw an orbit starting there, right click to quit.'
 
-pp = [];
 while 1,
         [x1,x2,button]=ginput(1);
+        lambda = [0;0];%rand(2,1);
         if button ~= 1, break; end
-        [t,x]=ode45(fname,[0,tf],[x1 x2]);
+        [t,x]=ode45(fname,[0,tf],[x1 x2 lambda']);
         plot(x(:,1),x(:,2));
         xmx=min([limits(2) max(x(:,1))]); xmn=max([limits(1) min(x(:,1))]); 
         ymx=min([limits(4) max(x(:,2))]); ymn=max([limits(3) min(x(:,2))]); 
@@ -69,9 +68,7 @@ while 1,
         x2=x1+cos(theta+pi/8)*lengthx/50*flag;
         y2=y1+sin(theta+pi/8)*lengthy/50*flag;
         plot([x0 x1 x2],[y0 y1 y2]);
-        
-        pp = [pp; {x,[x0,y0;x1,y1;x2,y2]}];
-        
+                
 end
 hold off
 axis('normal');
